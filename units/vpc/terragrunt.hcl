@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  # Прямая ссылка на модуль из Terraform Registry — без локальной обёртки.
+  # Direct reference to a module from the Terraform Registry — no local wrapper.
   source = "tfr:///terraform-aws-modules/vpc/aws?version=${values.module_version}"
 }
 

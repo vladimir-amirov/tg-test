@@ -3,8 +3,9 @@ include "root" {
 }
 
 terraform {
-  # Wrapper-модуль из этого же каталога — версия пробрасывается через values.module_version,
-  # которая в стек-файле обычно совпадает с тегом каталога (catalog_version).
+  # Wrapper module from this same catalog — version is propagated via
+  # values.module_version, which in the stack file typically matches the
+  # catalog tag (catalog_version).
   source = "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/ec2-2048?ref=${values.module_version}"
 }
 
