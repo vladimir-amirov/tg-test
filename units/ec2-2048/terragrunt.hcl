@@ -3,10 +3,9 @@ include "root" {
 }
 
 terraform {
-  # Локальный wrapper-модуль (склеивает SG + EC2 + TG attachment + user_data).
-  # Когда каталог переедет в Git-remote — заменить на:
-  #   source = "git::ssh://git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/ec2-2048?ref=${values.module_version}"
-  source = "/Users/raiveton/work/business-class/ops-infrastructure-catalog/modules/ec2-2048"
+  # Wrapper-модуль из этого же каталога — версия пробрасывается через values.module_version,
+  # которая в стек-файле обычно совпадает с тегом каталога (catalog_version).
+  source = "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/ec2-2048?ref=${values.module_version}"
 }
 
 dependency "vpc" {
