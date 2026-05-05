@@ -8,7 +8,7 @@ terraform {
 }
 
 dependency "vpc" {
-  config_path = values.vpc_path
+  config_path = try(values.vpc_path, "../vpc")
 
   mock_outputs = {
     vpc_id         = "vpc-00000000"
@@ -23,25 +23,25 @@ inputs = {
   vpc_id  = dependency.vpc.outputs.vpc_id
   subnets = dependency.vpc.outputs.public_subnets
 
-  enable_deletion_protection = false
+  enable_deletion_protection = try(values.enable_deletion_protection, false)
 
-  security_group_ingress_rules = {
+  security_group_ingress_rules = try(values.security_group_ingress_rules, {
     http = {
       from_port   = 80
       to_port     = 80
       ip_protocol = "tcp"
       cidr_ipv4   = "0.0.0.0/0"
     }
-  }
+  })
 
-  security_group_egress_rules = {
+  security_group_egress_rules = try(values.security_group_egress_rules, {
     all = {
       ip_protocol = "-1"
       cidr_ipv4   = "0.0.0.0/0"
     }
-  }
+  })
 
-  listeners = {
+  listeners = try(values.listeners, {
     http = {
       port     = 80
       protocol = "HTTP"
@@ -49,9 +49,9 @@ inputs = {
         target_group_key = "instances"
       }
     }
-  }
+  })
 
-  target_groups = {
+  target_groups = try(values.target_groups, {
     instances = {
       name_prefix       = "tg-"
       protocol          = "HTTP"
@@ -68,5 +68,7 @@ inputs = {
         unhealthy_threshold = 3
       }
     }
-  }
+  })
+
+  tags = try(values.tags, {})
 }
