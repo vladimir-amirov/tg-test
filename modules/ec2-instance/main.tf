@@ -1,4 +1,6 @@
 data "aws_ami" "selected" {
+  count = var.ami_id == null ? 1 : 0
+
   most_recent = true
   owners      = var.ami_owners
 
@@ -8,13 +10,17 @@ data "aws_ami" "selected" {
   }
 }
 
+locals {
+  ami_id = coalesce(var.ami_id, try(data.aws_ami.selected[0].id, null))
+}
+
 module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 5.7"
 
   name = var.name
 
-  ami                         = data.aws_ami.selected.id
+  ami                         = local.ami_id
   instance_type               = var.instance_type
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = var.vpc_security_group_ids

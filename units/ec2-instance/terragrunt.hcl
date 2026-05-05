@@ -35,5 +35,12 @@ inputs = {
   user_data                   = try(values.user_data, null)
   associate_public_ip_address = try(values.associate_public_ip_address, false)
   iam_role_policies           = try(values.iam_role_policies, {})
-  tags                        = try(values.tags, {})
+
+  # AMI selection: explicit ami_id wins; otherwise the module's lookup uses
+  # owners + name_filter (with sensible defaults inside the module).
+  ami_id          = try(values.ami_id, null)
+  ami_owners      = try(values.ami_owners, ["amazon"])
+  ami_name_filter = try(values.ami_name_filter, ["al2023-ami-2023*-x86_64"])
+
+  tags = try(values.tags, {})
 }

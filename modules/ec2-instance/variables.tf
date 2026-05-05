@@ -37,14 +37,20 @@ variable "iam_role_policies" {
   default     = {}
 }
 
+variable "ami_id" {
+  description = "Pin a specific AMI ID. If null, falls back to ami_owners + ami_name_filter lookup. Use this for golden images."
+  type        = string
+  default     = null
+}
+
 variable "ami_owners" {
-  description = "List of AMI owners to filter by"
+  description = "List of AMI owners to filter by (only used when ami_id is null)"
   type        = list(string)
   default     = ["amazon"]
 }
 
 variable "ami_name_filter" {
-  description = "List of AMI name patterns (used in the 'name' filter)"
+  description = "List of AMI name patterns used in the 'name' filter (only used when ami_id is null)"
   type        = list(string)
   default     = ["al2023-ami-2023*-x86_64"]
 }
