@@ -2,8 +2,14 @@ include "root" {
   path = find_in_parent_folders("root.hcl")
 }
 
+locals {
+  # If LOCAL_CATALOG_PATH is set, use the local on-disk module; otherwise pull
+  # the pinned tag from GitHub. This lets you iterate without commit/push.
+  catalog_local = get_env("LOCAL_CATALOG_PATH", "")
+}
+
 terraform {
-  source = "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/ec2-instance?ref=${values.module_version}"
+  source = local.catalog_local != "" ? "${local.catalog_local}/modules/ec2-instance" : "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/ec2-instance?ref=${values.module_version}"
 }
 
 dependency "vpc" {

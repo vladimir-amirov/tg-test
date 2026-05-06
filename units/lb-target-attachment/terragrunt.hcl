@@ -2,8 +2,12 @@ include "root" {
   path = find_in_parent_folders("root.hcl")
 }
 
+locals {
+  catalog_local = get_env("LOCAL_CATALOG_PATH", "")
+}
+
 terraform {
-  source = "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/lb-target-attachment?ref=${values.module_version}"
+  source = local.catalog_local != "" ? "${local.catalog_local}/modules/lb-target-attachment" : "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/lb-target-attachment?ref=${values.module_version}"
 }
 
 dependency "alb" {
