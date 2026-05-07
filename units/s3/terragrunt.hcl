@@ -28,5 +28,13 @@ inputs = {
   ignore_public_acls      = try(values.ignore_public_acls, true)
   restrict_public_buckets = try(values.restrict_public_buckets, true)
 
+  control_object_ownership = try(values.control_object_ownership, false)
+  object_ownership         = try(values.object_ownership, "BucketOwnerEnforced")
+
+  attach_policy = try(values.attach_policy, false)
+  policy        = try(values.policy, null)
+
+  lifecycle_rule = try(values.lifecycle_rule, [])
+
   tags = try(values.tags, {})
 }
