@@ -9,6 +9,12 @@ variable "role_path" {
   default     = "/"
 }
 
+variable "role_description" {
+  description = "Description of the IAM role."
+  type        = string
+  default     = null
+}
+
 variable "instance_profile_name" {
   description = "Name of the IAM instance profile."
   type        = string

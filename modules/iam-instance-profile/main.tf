@@ -1,42 +1,37 @@
-data "aws_iam_policy_document" "trust" {
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
+module "iam_role" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role?ref=v6.2.3"
 
-    principals {
-      type        = "Service"
-      identifiers = var.trusted_services
+  name            = var.role_name
+  use_name_prefix = false
+  path            = var.role_path
+  description     = var.role_description
+
+  trust_policy_permissions = {
+    TrustedServices = {
+      actions = ["sts:AssumeRole"]
+      principals = [{
+        type        = "Service"
+        identifiers = var.trusted_services
+      }]
     }
   }
-}
 
-resource "aws_iam_role" "this" {
-  name               = var.role_name
-  path               = var.role_path
-  assume_role_policy = data.aws_iam_policy_document.trust.json
-
-  tags = var.tags
+  policies = var.managed_policy_arns
+  tags     = var.tags
 }
 
 resource "aws_iam_role_policy" "this" {
   for_each = var.inline_policies
 
   name   = each.key
-  role   = aws_iam_role.this.id
+  role   = module.iam_role.name
   policy = each.value
-}
-
-resource "aws_iam_role_policy_attachment" "this" {
-  for_each = var.managed_policy_arns
-
-  role       = aws_iam_role.this.name
-  policy_arn = each.value
 }
 
 resource "aws_iam_instance_profile" "this" {
   name = var.instance_profile_name
   path = var.instance_profile_path
-  role = aws_iam_role.this.name
+  role = module.iam_role.name
 
   tags = var.tags
 }
