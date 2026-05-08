@@ -3,27 +3,16 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role?ref=${values.module_version}"
+  source = "git::git@github.com:business-class-vcs/ops-infrastructure-catalog.git//modules/iam-role?ref=${values.catalog_version}"
 }
 
 inputs = {
-  name            = values.name
-  use_name_prefix = false
-  description     = try(values.description, "Allows ECS tasks to call AWS services on your behalf.")
-
-  trust_policy_permissions = {
-    TrustedServices = {
-      actions = ["sts:AssumeRole"]
-      principals = [{
-        type        = "Service"
-        identifiers = try(values.trusted_services, ["ecs-tasks.amazonaws.com"])
-      }]
-    }
-  }
-
-  create_inline_policy          = length(try(values.inline_policies, {})) > 0
-  source_inline_policy_documents = values(try(values.inline_policies, {}))
-  policies = {
+  role_name        = values.name
+  role_path        = try(values.path, "/")
+  role_description = try(values.description, "Allows ECS tasks to call AWS services on your behalf.")
+  trusted_services = try(values.trusted_services, ["ecs-tasks.amazonaws.com"])
+  inline_policies  = try(values.inline_policies, {})
+  managed_policy_arns = {
     for policy_arn in try(values.managed_policy_arns, []) :
     replace(replace(policy_arn, "arn:aws:iam::aws:policy/", ""), "/", "_") => policy_arn
   }
