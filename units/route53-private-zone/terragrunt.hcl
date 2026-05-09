@@ -3,14 +3,9 @@ include "root" {
 }
 
 terraform {
-  source = "git::git@github.com:business-class-vcs/terraform-aws-route53.git//private-zone?ref=${values.version}"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-route53.git//modules/zones?ref=${values.version}"
 }
 
 inputs = {
-  name          = values.name
-  comment       = try(values.comment, "Managed by Terragrunt")
-  vpc_id        = values.vpc_id
-  force_destroy = try(values.force_destroy, false)
-
-  tags = try(values.tags, {})
+  # TODO: implement
 }
