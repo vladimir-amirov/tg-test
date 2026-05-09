@@ -30,22 +30,6 @@ dependency "lb_pub" {
   mock_outputs_allowed_terraform_commands = ["validate", "plan"]
 }
 
-locals {
-  # Resolve "../lb-int" / "../lb-pub" symbolic refs to actual TG ARNs from sibling units.
-  # Falls back to the literal value when skip_outputs=true (outputs = {}).
-  load_balancer = {
-    for k, v in try(values.load_balancer, {}) : k => merge(v, {
-      target_group_arn = (
-        try(v.target_group_arn, "") == "../lb-int" ?
-          try(dependency.lb_int.outputs.target_groups["service"].arn, v.target_group_arn) :
-        try(v.target_group_arn, "") == "../lb-pub" ?
-          try(dependency.lb_pub.outputs.target_groups["service"].arn, v.target_group_arn) :
-        v.target_group_arn
-      )
-    })
-  }
-}
-
 inputs = {
   name        = values.name
   cluster_arn = values.cluster_arn
@@ -86,7 +70,17 @@ inputs = {
   ])
 
   propagate_tags = try(values.propagate_tags, "NONE")
-  load_balancer  = local.load_balancer
+  load_balancer = {
+    for k, v in try(values.load_balancer, {}) : k => merge(v, {
+      target_group_arn = (
+        try(v.target_group_arn, "") == "../lb-int" ?
+          try(dependency.lb_int.outputs.target_groups["service"].arn, v.target_group_arn) :
+        try(v.target_group_arn, "") == "../lb-pub" ?
+          try(dependency.lb_pub.outputs.target_groups["service"].arn, v.target_group_arn) :
+        v.target_group_arn
+      )
+    })
+  }
 
   # Use pre-existing IAM roles; do not let the module create new ones
   create_task_exec_iam_role = try(values.create_task_exec_iam_role, false)
