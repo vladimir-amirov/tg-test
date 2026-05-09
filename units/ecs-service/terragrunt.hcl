@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs.git//modules/service?ref=${values.version}"
+  source = "tfr:///terraform-aws-modules/ecs/aws//modules/service?version=${trimprefix(values.version, "v")}"
 }
 
 # Optional dependency on a sibling lb-int unit (lb-service-attachment).
@@ -15,7 +15,7 @@ dependency "lb_int" {
   mock_outputs = {
     target_groups = { service = { arn = "arn:aws:elasticloadbalancing:us-east-2:123456789012:targetgroup/mock-int/abcdef1234567890" } }
   }
-  mock_outputs_allowed_terraform_commands = ["validate", "plan"]
+  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan"]
 }
 
 # Optional dependency on a sibling lb-pub unit (lb-service-attachment).
@@ -27,7 +27,7 @@ dependency "lb_pub" {
   mock_outputs = {
     target_groups = { service = { arn = "arn:aws:elasticloadbalancing:us-east-2:123456789012:targetgroup/mock-pub/abcdef1234567890" } }
   }
-  mock_outputs_allowed_terraform_commands = ["validate", "plan"]
+  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan"]
 }
 
 inputs = {
@@ -44,7 +44,7 @@ inputs = {
 
   # Capacity provider strategy drives placement; no fixed launch_type
   launch_type                = null
-  capacity_provider_strategy = try(values.capacity_provider_strategy, [])
+  capacity_provider_strategy = try(values.capacity_provider_strategy, null)
 
   cpu    = values.cpu
   memory = values.memory
@@ -64,10 +64,7 @@ inputs = {
   # CI/CD (GitHub Actions) owns task definition revisions — Terraform only seeds the first one
   ignore_task_definition_changes = try(values.ignore_task_definition_changes, true)
 
-  ordered_placement_strategy = try(values.ordered_placement_strategy, [
-    { type = "spread", field = "attribute:ecs.availability-zone" },
-    { type = "binpack", field = "memory" },
-  ])
+  ordered_placement_strategy = try(values.ordered_placement_strategy, null)
 
   propagate_tags = try(values.propagate_tags, "NONE")
   load_balancer = {

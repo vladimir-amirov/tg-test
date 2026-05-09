@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-assumable-role?ref=${values.version}"
+  source = "tfr:///terraform-aws-modules/iam/aws//modules/iam-assumable-role?version=${values.version}"
 }
 
 inputs = {

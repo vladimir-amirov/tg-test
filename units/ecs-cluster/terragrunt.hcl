@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-ecs.git//modules/cluster?ref=${values.version}"
+  source = "tfr:///terraform-aws-modules/ecs/aws//modules/cluster?version=${values.version}"
 }
 
 locals {

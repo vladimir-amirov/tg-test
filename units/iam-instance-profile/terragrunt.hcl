@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-instance-profile?ref=${values.version}"
+  source = "tfr:///terraform-aws-modules/iam/aws//modules/iam-instance-profile?version=${values.version}"
 }
 
 inputs = {

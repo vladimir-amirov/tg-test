@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-s3-bucket.git//?ref=${values.version}"
+  source = "tfr:///terraform-aws-modules/s3-bucket/aws?version=${values.version}"
 }
 
 inputs = {
