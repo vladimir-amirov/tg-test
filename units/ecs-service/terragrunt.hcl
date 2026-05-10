@@ -39,6 +39,9 @@ inputs = {
 
   network_mode          = try(values.network_mode, "bridge")
   create_security_group = try(values.create_security_group, false)
+  security_group_ids    = try(values.security_group_ids, [])
+  security_group_ingress_rules = try(values.security_group_ingress_rules, {})
+  security_group_egress_rules  = try(values.security_group_egress_rules, {})
   subnet_ids            = try(values.subnet_ids, [])
 
   # Capacity provider strategy drives placement; no fixed launch_type
