@@ -36,7 +36,7 @@ inputs = {
 
   fargate_capacity_providers         = try(values.fargate_capacity_providers, {})
   autoscaling_capacity_providers     = local.autoscaling_capacity_providers
-  default_capacity_provider_strategy = try(values.default_capacity_provider_strategy, [])
+  default_capacity_provider_strategy = try(values.default_capacity_provider_strategy, {})
 
   tags = try(values.tags, {})
 }
