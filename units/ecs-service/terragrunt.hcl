@@ -37,10 +37,9 @@ inputs = {
   desired_count       = try(values.desired_count, 2)
   scheduling_strategy = try(values.scheduling_strategy, "REPLICA")
 
-  # EC2 bridge mode — network_configuration block is omitted by the module for non-awsvpc
   network_mode          = try(values.network_mode, "bridge")
-  create_security_group = false
-  subnet_ids            = []
+  create_security_group = try(values.create_security_group, false)
+  subnet_ids            = try(values.subnet_ids, [])
 
   # Capacity provider strategy drives placement; no fixed launch_type
   launch_type                = null

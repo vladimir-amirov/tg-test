@@ -15,6 +15,9 @@ inputs = {
   internal                   = try(values.internal, false)
   enable_deletion_protection = try(values.enable_deletion_protection, false)
 
+  security_group_ingress_rules = try(values.security_group_ingress_rules, {})
+  security_group_egress_rules  = try(values.security_group_egress_rules, {})
+
   listeners = try(values.listeners, {})
 
   tags = try(values.tags, {})
