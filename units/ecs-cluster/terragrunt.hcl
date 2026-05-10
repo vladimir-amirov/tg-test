@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "tfr:///terraform-aws-modules/ecs/aws//modules/cluster?version=${values.version}"
+  source = "tfr:///terraform-aws-modules/ecs/aws//modules/cluster?version=${trimprefix(values.version, "v")}"
 }
 
 locals {

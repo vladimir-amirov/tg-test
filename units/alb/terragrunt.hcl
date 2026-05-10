@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "tfr:///terraform-aws-modules/alb/aws?version=${values.version}"
+  source = "tfr:///terraform-aws-modules/alb/aws?version=${trimprefix(values.version, "v")}"
 }
 
 inputs = {
